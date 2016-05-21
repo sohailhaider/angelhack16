@@ -24,6 +24,7 @@ class Welcome extends CI_Controller {
 			'title' => 'Welcome',
 			'view_name' => 'sample.php'
 		);
+
 		$this->load->view('template', $data);
 	}
 }
