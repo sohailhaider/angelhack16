@@ -59,10 +59,10 @@
 </script>
 <script src="<?php echo base_url()?>asserts/js/ripples.min.js"></script>
 <script src="<?php echo base_url()?>asserts/js/material.min.js"></script>
-<script src="https://fezvrasta.github.io/snackbarjs/dist/snackbar.min.js"></script>
+<script src="http://fezvrasta.github.io/snackbarjs/dist/snackbar.min.js"></script>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/6.2.0/jquery.nouislider.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/noUiSlider/6.2.0/jquery.nouislider.min.js"></script>
 <script>
     $(function () {
         $.material.init();

@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            padding-top: 50px
+            /*padding-top: 50px*/
         }
 
         #banner {
