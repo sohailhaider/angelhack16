@@ -1,24 +1,34 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: Sohail Haider
+ * Date: 22-May-16
+ * Time: 3:49 AM
+ */
+include('ip2locationlite.class.php');
+?>
 <!doctype html>
 <html lang="en">
 
-  <head>  	
+  <head>
   	<meta charset="utf-8">
     <meta name="description" content="Responsive Bootstrap Landing Page Template">
     <meta name="keywords" content="Bootstrap, Landing page, Template, Registration, Landing">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="Grayrids">
-		<title>Untitle Document</title>
+		<title>Home - Radiant</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="fonts/font-awesome.min.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="<?php echo base_url() ?>asserts/fonts/font-awesome.min.css" type="text/css" media="screen">
     <!-- Include roboto.css to use the Roboto web font, material.css to include the theme and ripples.css to style the ripple effect -->
-    <link href="css/material.min.css" rel="stylesheet">
-    <link href="css/ripples.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-    <link href="css/responsive.css" rel="stylesheet">
-    <link href="css/animate.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/material.min.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/ripples.min.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/main.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/responsive.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/animate.min.css" rel="stylesheet">
+    <link href="<?php echo base_url() ?>asserts/css/homepage/custom.css" rel="stylesheet">
   </head>
 
   <body>
@@ -29,43 +39,92 @@
       </div>
         <ul class="nav navbar-nav main-navigation">
           <li class="active"><a href="#home">Home</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#why">why</a></li>
-          <li><a href="#screenshot">Screenshots</a></li>
-          <li><a href="#testimonial">Testimonial</a></li>
-          <li><a href="#clients">Contact</a></li>
+          <li><a href="#features">Trending Searches</a></li>
+          <li><a href="#why">Expanding Deceases</a></li>
+          <li><a href="#screenshot">Cautions to Take this Summer</a></li>
+          <li><a href="#testimonial">Get your Store Listed</a></li>
+          <li><a href="#clients">Contact US</a></li>
         </ul>
         <button class="close-button" id="close-button">Close Menu</button>
     </div>
-  	
+
   	<div class="content-wrap">
      <header class="hero-area" id="home">
-      
+
       <div class="container">
           <div class="col-md-12">
 
             <div class="navbar navbar-inverse sticky-navigation navbar-fixed-top" role="navigation" data-spy="affix" data-offset-top="200">
               <div class="container">
                 <div class="navbar-header">
-                  <a class="logo-left " href="index.html"><i class="mdi-image-timelapse"></i>Radiant</a>
+                  <a class="logo-left " href="<?php echo base_url() ?>"><i class="mdi-image-timelapse"></i>Radiant</a>
                 </div>
                 <div class="navbar-right">
                   <button class="menu-icon"  id="open-button">
                     <i class="mdi-navigation-menu"></i>
-                  </button>             
+                  </button>
                 </div>
               </div>
             </div>
-			
+
 			<div class="col-md-12">
-				<h2 class="text-center padding-bottom-20">Welcome to Radiant</h2>
-				
+				<h2 class="text-center padding-bottom-20">Find the best place to buy</h2>
+
 				<form action="" method="POST">
-					<input type="text" class="form-control main-search" placeholder="Search" >
+                    <div class="row">
+                        <div class="col m6"  style="width: 70%; float: left; margin-top:25px" >
+                            <input type="text" class="form-control main-search" placeholder="Search" name="key">
+                        </div>
+                        <?php
+                        $ipLite = new ip2location_lite;
+                        $ipLite->setKey('2b898a027a08e111650de1c7e5938093901ad32e51539862293f67c12c99fb91');
+                        function get_client_ip_env() {
+                            $ipaddress = '';
+                            if (getenv('HTTP_CLIENT_IP'))
+                                $ipaddress = getenv('HTTP_CLIENT_IP');
+                            else if(getenv('HTTP_X_FORWARDED_FOR'))
+                                $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+                            else if(getenv('HTTP_X_FORWARDED'))
+                                $ipaddress = getenv('HTTP_X_FORWARDED');
+                            else if(getenv('HTTP_FORWARDED_FOR'))
+                                $ipaddress = getenv('HTTP_FORWARDED_FOR');
+                            else if(getenv('HTTP_FORWARDED'))
+                                $ipaddress = getenv('HTTP_FORWARDED');
+                            else if(getenv('REMOTE_ADDR'))
+                                $ipaddress = getenv('REMOTE_ADDR');
+                            else
+                                $ipaddress = 'UNKNOWN';
+
+                            return $ipaddress;
+                        }
+?>
+                        <div class="col m6" style="width: 20%; float: right; margin-right: 8%">
+                            <div class="form-group">
+                                <label for="sort">Sort:</label>
+                                <select name="sort" class="form-control" id="sort">
+                                    <option value="areaandprice">Area + Price</option>
+                                    <option value="type">Type</option>
+                                    <option value="price">Price</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <?php
+                                $locations = $ipLite->getCity(get_client_ip_env());
+                                $this->session->set_userdata('locations', json_encode($locations));
+                            if(get_client_ip_env()) {
+                                $locations = $ipLite->getCity(get_client_ip_env());
+                                echo "<i style='color: red;padding-left: 5%; margin-top: 20px'>Note: Running on Local host and getting IP: \"".get_client_ip_env()."\" so can't filter on base of location</i>";
+                            }
+                            ?>
+                            <input type="hidden" name="location" value="<?php json_encode($locations) ?>">
+
+                        </div>
+                    </div>
 				</form>
 			</div>
-        </div>        
-       
+        </div>
+
     </header>
 
     <section id="features" class="section">
@@ -84,7 +143,7 @@
               <div class="features-text">
                 <h4>Built-with Bootstrap 3.5.x</h4>
                 <p>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
                 </p>
               </div>
              </div>
@@ -113,11 +172,11 @@
               <div class="features-text">
                 <h4>Clean and Refreshing</h4>
                 <p>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
                 </p>
               </div>
             </div>
-          </div>            
+          </div>
 
 
           <div class="col-md-4 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="650ms">
@@ -143,7 +202,7 @@
               <div class="features-text">
                 <h4>Crafted with Love</h4>
                 <p>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
                 </p>
               </div>
             </div>
@@ -161,25 +220,25 @@
                 </p>
               </div>
             </div>
-          </div>   
+          </div>
         </div>
       </div>
     </section>
 
     <section id="why" class="section">
       <div class="container">
-        
-        <div class="row">     
+
+        <div class="row">
 
           <div class="col-md-6 col-sm-6 wow fadeInRight" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <img src="<?php echo base_url() ?>/asserts/img/features/img1.png" alt="">
+            <img src="<?php echo base_url() ?>asserts/img/features/img1.png" alt="">
           </div>
 
           <div class="col-md-6 col-sm-6 wow fadeInLeft" data-wow-duration="1000ms" data-wow-delay="300ms">
             <div class="pull-left content">
               <h2>This is Why You Will <br> Love Pluto</h2>
               <p>
-                Material UI Bootstrap APP and Business Template orem ipsum <br>
+Material UI Bootstrap APP and Business Template orem ipsum <br>
                 dolor sit amet, consectetur adipIusto quisquam idodit dolore inventore <br>
                 eumetur adipIusto quisquam idodit dolore inventore eum'
                 dolor sit amet, consectetur adipIusto quisquam idodit dolore inventore <br>
@@ -201,28 +260,28 @@
      <section id="main-features" class="section main-feature-gray">
       <div class="container">
 
-        <div class="row">   
+        <div class="row">
           <div class="col-md-8 col-sm-8 wow fadeInLeft" data-wow-duration="1000ms" data-wow-delay="300ms">
             <div class="feature-item">
               <h3 class="title-small">
                 Sync with the app to analyze your fitness
               </h3>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.  Lorem Ipsum has been the industry's 
-                standard dummy text, when an unknown printer took a galley of type and scrambled it to 
-                make a type specimen book. It has survived not only five centuries, but also the leap into electronicstandard 
-                dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to 
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.  Lorem Ipsum has been the industry's
+                standard dummy text, when an unknown printer took a galley of type and scrambled it to
+                make a type specimen book. It has survived not only five centuries, but also the leap into electronicstandard
+                dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to
                 make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-              </p>
+</p>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
               </p>
             </div>
           </div>
-          
+
           <div class="col-md-4 col-sm-4 wow fadeInRight" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <img src="<?php echo base_url() ?>/asserts/img/features/fet1.png" class="img-responsive" alt="">
-          </div>  
+            <img src="<?php echo base_url() ?>asserts/img/features/fet1.png" class="img-responsive" alt="">
+          </div>
 
         </div>
 
@@ -233,10 +292,10 @@
       <div class="container">
 
 
-        <div class="row">   
+        <div class="row">
           <div class="col-md-4 col-sm-4 wow fadeInLeft" data-wow-duration="1000ms" data-wow-delay="300ms">
-            <img src="<?php echo base_url() ?>/asserts/img/features/fet2.png" class="img-responsive" alt="">
-          </div>    
+            <img src="<?php echo base_url() ?>asserts/img/features/fet2.png" class="img-responsive" alt="">
+          </div>
 
           <div class="col-md-8 col-sm-8 wow fadeInRight" data-wow-duration="1000ms" data-wow-delay="300ms">
             <div class="feature-item">
@@ -244,18 +303,18 @@
                 Set a goal and improve your lifestyle
               </h3>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.  Lorem Ipsum has been the industry's 
-                standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to 
-                make a type specimen book. It has survived not only five centuries, but also the leap into electronicstandard 
-                dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to 
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.  Lorem Ipsum has been the industry's
+                standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to
+                make a type specimen book. It has survived not only five centuries, but also the leap into electronicstandard
+                dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to
                 make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-              </p>
+</p>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
               </p>
             </div>
           </div>
-          
+
         </div>
 
       </div>
@@ -264,28 +323,28 @@
      <section id="main-features" class="section main-feature-gray">
       <div class="container">
 
-        <div class="row">   
+        <div class="row">
           <div class="col-md-8 col-sm-8 wow fadeInLeft" data-wow-duration="1000ms" data-wow-delay="300ms">
             <div class="feature-item">
               <h3 class="title-small">
                 Start a Well-controlled Day!
               </h3>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.  Lorem Ipsum has been the industry's 
-                standard dummy text, when an unknown printer took a galley of type and scrambled it to 
-                make a type specimen book. It has survived not only five centuries, but also the leap into electronicstandard 
-                dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to 
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.  Lorem Ipsum has been the industry's
+                standard dummy text, when an unknown printer took a galley of type and scrambled it to
+                make a type specimen book. It has survived not only five centuries, but also the leap into electronicstandard
+                dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to
                 make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-              </p>
+</p>
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
               </p>
             </div>
           </div>
-          
+
           <div class="col-md-4 col-sm-4 wow fadeInRight" data-wow-duration="1000ms" data-wow-delay="300ms">
             <img src="<?php echo base_url() ?>/asserts/img/features/fet3.png" class="img-responsive" alt="">
-          </div>  
+          </div>
 
         </div>
 
@@ -294,7 +353,7 @@
 
     <section id="cta">
       <div class="container">
-        <div class="row text-center">         
+        <div class="row text-center">
             <h3 class="title-small wow bounce" data-wow-duration="1000ms" data-wow-delay="300ms">Join Us Today and Change Yourself</h3>
              <a href="javascript:void(0)" class="btn btn-lg btn-border">Sign Up</a>
           </div>
@@ -306,7 +365,7 @@
         <div class="section-header">
           <h1 class="section-title wow fadeInRight" data-wow-duration="1000ms" data-wow-delay="300ms">Other Features</h1>
           <h2 class="section-subtitle wow fadeInRight" data-wow-duration="1000ms" data-wow-delay="400ms">Who seeks after it and wants to have it</h2>
-        </div> 
+        </div>
         <div class="row">
           <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="400ms">
             <div class="features-content">
@@ -384,10 +443,10 @@
       </div>
     </section>
 
-	
+
     <section id="clients" class="section">
       <div class="container">
-        
+
         <div class="section-header text-center">
           <h1 class="section-title wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">Featured on</h1>
           <h2 class="section-subtitle wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">Material UI Bootstrap APP and Business Template</h2>
@@ -475,9 +534,9 @@
           </div>
         </div>
       </div>
-    </section>    
+    </section>
 
-    <div class="map-area">      
+    <div class="map-area">
       <div class="map">
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6853.31334931688!2d149.5710983929677!3d-33.43399308961885!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0000000000000000%3A0x63680231a1016da2!2sWestern+Region+Academy+of+Sport!5e0!3m2!1sen!2sbd!4v1436826340086" width="100%" height="400" frameborder="0" style="border:0" allowfullscreen></iframe>
        </div>
@@ -499,7 +558,7 @@
                 <li><a href="http://landingbow.com/">Landingbow</a>
                 </li>
                 <li><a href="http://freebiescircle.com/">FreebiesCicle</a>
-                </li>               
+                </li>
               </ul>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -539,52 +598,52 @@
               <a class="social" href="#" target="_blank"><i class="fa fa-google-plus"></i></a>
             </div>
           </div>
-        </div>  
-      </div>      
+        </div>
+      </div>
       <!-- Go to Top Link -->
       <a href="#home" class="btn btn-primary back-to-top">
       <i class=" mdi-hardware-keyboard-arrow-up"></i>
       </a>
-    </section> 
+    </section>
 
     <section id="copyright">
       <div class="container">
         <div class="row">
           <div class="col-md-12">
             <p class="copyright-text">
-             © Pluto 2015 All right reserved. Designed and Developed by 
-              <a href="http://graygrids.com/">
-                GrayGrids
+© Pluto 2015 All right reserved. Designed and Developed by
+<a href="http://graygrids.com/">
+    GrayGrids
               </a>
             </p>
           </div>
         </div>
       </div>
-    </section>     
-    </div>  
-		
+    </section>
+    </div>
 
-    <script src="js/jquery-2.1.4.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/ripples.min.js"></script>
-    <script src="js/material.min.js"></script>
-    <script src="js/wow.js"></script>
-    <script src="js/jquery.mmenu.min.all.js"></script> 
-    <script src="js/count-to.js"></script>   
-    <script src="js/jquery.inview.min.js"></script>     
-    <script src="js/classie.js"></script>
-    <script src="js/jquery.nav.js"></script>      
-    <script src="js/smooth-on-scroll.js"></script>
-    <script src="js/smooth-scroll.js"></script>
-    <script src="js/main.js"></script>
 
-    
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/jquery-2.1.4.min.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/bootstrap.min.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/ripples.min.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/material.min.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/wow.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/jquery.mmenu.min.all.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/count-to.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/jquery.inview.min.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/classie.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/jquery.nav.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/smooth-on-scroll.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/smooth-scroll.js"></script>
+    <script src="<?php echo base_url() ?>/asserts/js/homepage/main.js"></script>
+
+
 
     <script>
-        $(document).ready(function() {
-            // This command is used to initialize some elements and make them work properly
-            $.material.init();
-        });
+$(document).ready(function() {
+    // This command is used to initialize some elements and make them work properly
+    $.material.init();
+});
     </script>
 
   </body>
