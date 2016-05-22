@@ -20,6 +20,6 @@ class Medicine extends CI_Controller
         $location = $this->session->userdata('locations');
 
         $data = $this->Store_model->getProductById($id);
-
+        echo json_encode($data);
     }
 }
